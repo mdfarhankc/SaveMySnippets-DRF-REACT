@@ -1,0 +1,15 @@
+[project]
+name = "save_my_snippet"
+version = "1.0"
+description = "SaveMySnippet can be used to save all your code snippets without the worry of losing them when in need."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=5.2.1",
+    "django-cors-headers>=4.7.0",
+    "djangorestframework>=3.16.0",
+    "djangorestframework-simplejwt>=5.5.0",
+    "python-dotenv>=1.1.0",
+]
+[tool.uv.scripts]
+dev = "python manage.py runserver"
