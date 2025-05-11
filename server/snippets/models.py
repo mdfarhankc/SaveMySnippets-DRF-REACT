@@ -12,7 +12,7 @@ class Snippet(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="snippets")
     description = models.TextField(_("Description"), blank=True)
-    code = models.TextField(_("Code snippet"))
+    content = models.TextField(_("Code snippet"))
     language = models.ForeignKey(
         "Language", on_delete=models.SET_NULL, null=True, related_name="snippets")
     is_public = models.BooleanField(_("Is Public"), default=False)

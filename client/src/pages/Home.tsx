@@ -33,7 +33,7 @@ export default function HomePage() {
             ) : (
               <>
                 <Button size="lg" asChild>
-                  <Link to="/register">Get Started</Link>
+                  <Link to="/sign-up">Get Started</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
                   <Link to="/explore">Explore Snippets</Link>

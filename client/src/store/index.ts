@@ -5,8 +5,8 @@ import type { User } from "@/types";
 interface AuthState {
     access: string | null;
     refresh: string | null;
-    user: User | null;
-    login: (values: { access: string; refresh: string; user: User }) => void;
+    authUser: User | null;
+    login: (values: { access: string; refresh: string; authUser: User }) => void;
     logout: () => void;
 }
 
@@ -15,9 +15,9 @@ export const useAuthStore = create<AuthState>()(
     persist((set) => ({
         access: null,
         refresh: null,
-        user: null,
-        login: ({ access, refresh, user }) => set({ access: access, refresh: refresh, user }),
-        logout: () => set({ access: null, refresh: null, user: null }),
+        authUser: null,
+        login: ({ access, refresh, authUser }) => set({ access: access, refresh: refresh, authUser }),
+        logout: () => set({ access: null, refresh: null, authUser: null }),
     }), {
         name: "auth-store",
     })

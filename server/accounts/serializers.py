@@ -5,16 +5,33 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
+from typing import Any
 
 User = get_user_model()
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    default_error_messages = {
+        "no_active_account": _("Invalid authentication credentials!")
+    }
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
         token['email'] = user.email
+        token['id'] = str(user.id)
         return token
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        data = super().validate(attrs)
+        data['user'] = {
+            'id': str(self.user.id),
+            'email': self.user.email,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'full_name': self.user.get_full_name(),
+        }
+        return data
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
