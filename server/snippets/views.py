@@ -1,8 +1,8 @@
 from rest_framework import generics, permissions
 
-from .models import Snippet
+from .models import Snippet, Language
 from .serializers import (
-    CreateSnippetSerializer, SnippetSerializer
+    CreateSnippetSerializer, SnippetSerializer, LanguageSerializer
 )
 from .permissions import IsOwnerOrReadonly
 
@@ -27,7 +27,7 @@ class SnippetListView(generics.ListAPIView):
         """
         Optionally filter snippets by public visibility.
         """
-        queryset = self.queryset
+        queryset = Snippet.objects.all()
         is_public = self.request.query_params.get('is_public', None)
         if is_public is not None:
             queryset = queryset.filter(is_public=is_public)
@@ -79,3 +79,9 @@ class UserSnippetsView(generics.ListAPIView):
 
     def get_queryset(self):
         return Snippet.objects.filter(user=self.request.user)
+
+
+class ListLanguagesView(generics.ListAPIView):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    permission_classes = [permissions.AllowAny]

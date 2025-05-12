@@ -27,7 +27,7 @@ api.interceptors.response.use(
 
             try {
                 const { refresh, login } = useAuthStore.getState();
-                const res = await axios.post(`${api.defaults.baseURL}/auth/refresh/`, {
+                const res = await axios.post(`${api.defaults.baseURL}/auth/token/refresh/`, {
                     refresh,
                 });
 

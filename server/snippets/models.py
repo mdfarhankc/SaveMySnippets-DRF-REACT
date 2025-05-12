@@ -15,10 +15,11 @@ class Snippet(models.Model):
     content = models.TextField(_("Code snippet"))
     language = models.ForeignKey(
         "Language", on_delete=models.SET_NULL, null=True, related_name="snippets")
+    tags = models.ManyToManyField("Tag", related_name="snippets", blank=True)
     is_public = models.BooleanField(_("Is Public"), default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ["-created_at"]
         verbose_name_plural = "Snippets"
@@ -31,9 +32,21 @@ class Language(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("Name"), unique=True)
     extension = models.CharField(_("Extension"), max_length=10, default=".txt")
-    
+
     class Meta:
         verbose_name_plural = "Languages"
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(_("Name"), max_length=50, unique=True)
+
+    class Meta:
+        verbose_name_plural = "Tags"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name

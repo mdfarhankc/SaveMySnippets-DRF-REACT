@@ -118,3 +118,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+.code-highlighter::-webkit-scrollbar {
+  display: none;
+}
+
+.code-highlighter {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.code-highlighter code {
+  font-size: 10px !important;
+  display: block;
+}

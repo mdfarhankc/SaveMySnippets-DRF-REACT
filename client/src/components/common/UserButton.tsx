@@ -12,6 +12,7 @@ import Loading from "@/components/common/Loading";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuthStore } from "@/store";
+import { Link } from "react-router";
 
 export default function UserButton() {
   const { mutate: logout, isPending } = useLogout();
@@ -31,8 +32,10 @@ export default function UserButton() {
         <DropdownMenuLabel>{authUser?.full_name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            <LayoutDashboard className="w-6 h-6" /> Dashboard
+          <DropdownMenuItem className="cursor-pointer" asChild>
+            <Link to={"/dashboard"}>
+              <LayoutDashboard className="w-6 h-6" /> Dashboard
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

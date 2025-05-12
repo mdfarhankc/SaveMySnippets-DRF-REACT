@@ -6,6 +6,7 @@ import LoginPage from "@/pages/(auth)/Login";
 import RegisterPage from "@/pages/(auth)/Register";
 import ProtectedLayout from "@/components/layouts/ProtectedLayout";
 import DashboardPage from "@/pages/(main)/Dashboard";
+import SnippetDetailPage from "@/pages/(main)/SnippetDetail";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard",
             element: <DashboardPage />,
+          },
+          {
+            path: "/snippet/:snippetId",
+            element: <SnippetDetailPage />,
           },
         ],
       },
