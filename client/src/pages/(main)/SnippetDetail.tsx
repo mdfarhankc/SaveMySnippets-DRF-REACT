@@ -1,7 +1,7 @@
 import CodeHighlighter from "@/components/snippets/CodeHighlighter";
+import SnippetDetailSkeleton from "@/components/snippets/SnippetDetailSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useGetSnippetById } from "@/hooks/snippets/useGetSnippetById";
 import { ArrowLeft, Eye, Lock } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -11,7 +11,7 @@ export default function SnippetDetailPage() {
   const { snippetId } = useParams<{ snippetId: string }>();
   const { snippet, isLoading, isError } = useGetSnippetById(snippetId!);
 
-  if (isError || !snippet) {
+  if (isError) {
     return (
       <main className="flex-1 flex items-center justify-center">
         <p className="text-destructive">Failed to load snippet.</p>
@@ -20,9 +20,13 @@ export default function SnippetDetailPage() {
   }
 
   if (isLoading) {
+    return <SnippetDetailSkeleton />;
+  }
+
+  if (!snippet) {
     return (
       <main className="flex-1 flex items-center justify-center">
-        <Skeleton className="h-8 w-1/2" />
+        <p className="text-destructive">Snippet not found!.</p>
       </main>
     );
   }
