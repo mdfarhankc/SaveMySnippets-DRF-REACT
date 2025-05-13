@@ -4,6 +4,7 @@ import { useAuthStore } from "@/store";
 import { Code, Globe, LockKeyhole, Save, Search, Tags } from "lucide-react";
 import { Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import HeroImage from "@/assets/hero.png";
 
 const features = [
   {
@@ -44,35 +45,55 @@ export default function HomePage() {
   return (
     <>
       <main className="flex-1">
-        <section className="py-20 px-6 md:py-28 bg-gradient-to-b from-background to-muted/50">
-          <div className="container max-w-5xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-primary/10 p-3 rounded-full">
-                <Code className="h-12 w-12 text-primary" />
+        {/* Hero Section */}
+        <section className="py-20 px-6 md:py-36 bg-gradient-to-b from-background to-muted/50">
+          <div className="container max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 text-center lg:text-left">
+            {/* Left Content */}
+            <div className="flex-1">
+              <div className="flex justify-center lg:justify-start mb-6">
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <Code className="h-12 w-12 text-primary" />
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 text-shadow-primary text-shadow-md">
+                Organize Your Code Snippets
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mb-8 mx-auto lg:mx-0">
+                Store, manage, and share your code snippets in one place.
+                Perfect for developers who want to keep their code organized.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                {authUser ? (
+                  <>
+                    <Button size="lg" asChild>
+                      <Link to="/dashboard">Go to Dashboard</Link>
+                    </Button>
+                    <Button variant="outline" size="lg" asChild>
+                      <Link to="/explore">Explore Snippets</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="lg" asChild>
+                      <Link to="/sign-up">Get Started</Link>
+                    </Button>
+                    <Button variant="outline" size="lg" asChild>
+                      <Link to="/explore">Explore Snippets</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 text-shadow-primary text-shadow-md">
-              Organize Your Code Snippets
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Store, manage, and share your code snippets in one place. Perfect
-              for developers who want to keep their code organized.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {authUser ? (
-                <Button size="lg" asChild>
-                  <Link to="/dashboard">Go to Dashboard</Link>
-                </Button>
-              ) : (
-                <>
-                  <Button size="lg" asChild>
-                    <Link to="/sign-up">Get Started</Link>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild>
-                    <Link to="/explore">Explore Snippets</Link>
-                  </Button>
-                </>
-              )}
+            {/* Right Image */}
+            <div className="flex-1 hidden lg:flex">
+              <img
+                src={HeroImage}
+                alt="Organize Code Snippets"
+                className="w-full h-auto rounded-xl"
+                style={{
+                  boxShadow: "0 0 30px var(--primary)",
+                }}
+              />
             </div>
           </div>
         </section>
@@ -85,7 +106,7 @@ export default function HomePage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map(({ icon, title, text }, i) => (
-                <Card key={i}>
+                <Card key={i} className="hover:border hover:border-primary">
                   <CardHeader>
                     <div className="bg-primary/10 w-12 h-12 flex items-center justify-center rounded-full mb-2">
                       {icon}

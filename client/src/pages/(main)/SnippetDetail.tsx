@@ -78,6 +78,7 @@ export default function SnippetDetailPage() {
         <CodeHighlighter
           language={snippet.language.extension.replace(".", "")}
           content={snippet.content}
+          showCopyButton={true}
         />
       </section>
     </main>
