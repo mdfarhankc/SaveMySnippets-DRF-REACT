@@ -14,19 +14,28 @@ import { Eye, Lock } from "lucide-react";
 import { Link } from "react-router";
 import CodeHighlighter from "./CodeHighlighter";
 
-export default function SnippetCard({ snippet }: { snippet: Snippet }) {
+export default function SnippetCard({
+  snippet,
+  isPublic = false,
+}: {
+  snippet: Snippet;
+  isPublic?: boolean;
+}) {
   useEffect(() => {
     Prism.highlightAll();
   }, [snippet.content]);
 
   const language = snippet.language.extension.replace(".", "");
+  const snippetDetailLink = isPublic
+    ? `/public/snippet/${snippet.id}`
+    : `/snippet/${snippet.id}`;
 
   return (
     <Card>
       <CardHeader className="pb-3 min-h-[100px] flex flex-col justify-between">
         <div className="flex justify-between items-start w-full">
           <div className="flex-1">
-            <Link to={`/snippet/${snippet.id}`} className="hover:underline">
+            <Link to={snippetDetailLink} className="hover:underline">
               <CardTitle className="line-clamp-1 text-base sm:text-lg">
                 {snippet.title}
               </CardTitle>

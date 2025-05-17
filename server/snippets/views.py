@@ -18,20 +18,10 @@ class CreateSnippetView(generics.CreateAPIView):
 
 
 class SnippetListView(generics.ListAPIView):
-    """List all snippets, or filter by 'is_public' field"""
-    queryset = Snippet.objects.all()
+    """List all public snippets"""
+    queryset = Snippet.objects.filter(is_public=True)
     serializer_class = SnippetSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        """
-        Optionally filter snippets by public visibility.
-        """
-        queryset = Snippet.objects.all()
-        is_public = self.request.query_params.get('is_public', None)
-        if is_public is not None:
-            queryset = queryset.filter(is_public=is_public)
-        return queryset
+    permission_classes = [permissions.AllowAny]
 
 
 class SnippetDetailView(generics.RetrieveAPIView):

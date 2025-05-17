@@ -7,6 +7,8 @@ import RegisterPage from "@/pages/(auth)/Register";
 import ProtectedLayout from "@/components/layouts/ProtectedLayout";
 import DashboardPage from "@/pages/(main)/Dashboard";
 import SnippetDetailPage from "@/pages/(main)/SnippetDetail";
+import ExplorePage from "@/pages/Explore";
+import ContactPage from "@/pages/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +19,21 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      // Explore
+      {
+        path: "/explore",
+        element: <ExplorePage />,
+      },
+      // Contact
+      {
+        path: "/contact",
+        element: <ContactPage />,
+      },
+      // Public Snippet Detail
+      {
+        path: "/public/snippet/:snippetId",
+        element: <SnippetDetailPage />,
       },
       //   Auth Pages
       {
