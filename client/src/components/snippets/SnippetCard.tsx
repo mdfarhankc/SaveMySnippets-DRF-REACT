@@ -14,21 +14,13 @@ import { Eye, Lock } from "lucide-react";
 import { Link } from "react-router";
 import CodeHighlighter from "./CodeHighlighter";
 
-export default function SnippetCard({
-  snippet,
-  isPublic = false,
-}: {
-  snippet: Snippet;
-  isPublic?: boolean;
-}) {
+export default function SnippetCard({ snippet }: { snippet: Snippet }) {
   useEffect(() => {
     Prism.highlightAll();
   }, [snippet.content]);
 
   const language = snippet.language.extension.replace(".", "");
-  const snippetDetailLink = isPublic
-    ? `/public/snippet/${snippet.id}`
-    : `/snippet/${snippet.id}`;
+  const snippetDetailLink = `/snippet/${snippet.slug}`;
 
   return (
     <Card>
@@ -40,7 +32,7 @@ export default function SnippetCard({
                 {snippet.title}
               </CardTitle>
             </Link>
-            <p className="text-muted-foreground mt-1 text-sm line-clamp-2 min-h-[40px]">
+            <p className="text-muted-foreground mt-1 text-sm line-clamp-2 min-h-10">
               {snippet.description || (
                 <span className="invisible">No description</span>
               )}
@@ -59,16 +51,14 @@ export default function SnippetCard({
           </Badge>
         </div>
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mt-3 min-h-[20px]">
+        <div className="flex flex-wrap gap-2 mt-3 min-h-5">
           {snippet.tags.length > 0 ? (
             <>
               {snippet.tags.slice(0, 3).map((tag, index) => (
-                <Badge key={index} variant="outline">
-                  {tag}
-                </Badge>
+                <Badge key={index}>{tag}</Badge>
               ))}
               {snippet.tags.length > 3 && (
-                <Badge variant="outline">+{snippet.tags.length - 3} more</Badge>
+                <Badge variant="success">+{snippet.tags.length - 3} more</Badge>
               )}
             </>
           ) : (
@@ -82,7 +72,7 @@ export default function SnippetCard({
           content={snippet.content}
           className={"code-highlighter"}
         />
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
       </CardContent>
       <CardFooter className="mt-auto text-sm text-muted-foreground flex items-center justify-between border-t">
         <div>Last updated: {format(new Date(snippet.updated_at), "PPP")}</div>

@@ -18,7 +18,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 
 interface LanguageSelectorProps {
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
 }
 

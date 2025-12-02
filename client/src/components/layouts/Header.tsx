@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router";
-import { useAuthStore } from "@/store";
-import Logo from "../common/Logo";
-import { ThemeToggle } from "../theme/ThemeToggle";
-import { Button } from "../ui/button";
-import UserButton from "../common/UserButton";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import Logo from "@/components/common/Logo";
+import UserButton from "@/components/common/UserButton";
 
 const navLinks = [
   {

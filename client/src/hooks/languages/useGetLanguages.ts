@@ -7,7 +7,7 @@ export const useGetLanguages = () => {
     const { data: languages, ...query } = useQuery({
         queryKey: ["languages"],
         queryFn: async () => {
-            const response = await api.get<Array<Lanugage>>('/languages/');
+            const response = await api.get<Array<Lanugage>>('/snippets/languages/');
             return response.data;
         },
     });

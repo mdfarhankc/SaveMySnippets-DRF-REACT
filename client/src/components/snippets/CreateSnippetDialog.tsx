@@ -1,5 +1,6 @@
 import LanguageSelector from "@/components/languages/LanguageSelector";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -27,13 +28,15 @@ import {
   type CreateEditSnippetValues,
 } from "@/validations/snippet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type ControllerRenderProps } from "react-hook-form";
 import LoadingButton from "../common/LoadingButton";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
+import { X } from "lucide-react";
 
 export default function CreateSnippetDialog() {
   const [open, setOpen] = useState(false);
+  const [tagsInput, setTagsInput] = useState("");
   const form = useForm<CreateEditSnippetValues>({
     resolver: zodResolver(createEditSnippetSchema),
     defaultValues: {
@@ -45,6 +48,13 @@ export default function CreateSnippetDialog() {
       tags: [],
     },
   });
+
+  const removeTag = (tagToRemove: string, field: ControllerRenderProps) => {
+    const updatedTags =
+      field.value?.filter((tag: string) => tag !== tagToRemove) || [];
+    field.onChange(updatedTags);
+    setTagsInput(updatedTags.join(", "));
+  };
 
   const { mutate: createSnippet, isPending } = useCreateSnippets({
     onSuccess: () => {
@@ -147,18 +157,41 @@ export default function CreateSnippetDialog() {
                   <FormItem>
                     <FormLabel>Tags</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter comma-separated tags (e.g., auth,react,api)"
-                        value={field.value?.join(", ") ?? ""}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          const tagsArray = raw
-                            .split(",")
-                            .map((tag) => tag.trim())
-                            .filter((tag) => tag.length > 0);
-                          field.onChange(tagsArray);
-                        }}
-                      />
+                      <div className="space-y-2">
+                        <Input
+                          placeholder="Enter comma-separated tags (e.g., auth,react,api)"
+                          value={tagsInput}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            setTagsInput(raw);
+                            const tagsArray = raw
+                              .split(",")
+                              .map((tag) => tag.trim())
+                              .filter((tag) => tag.length > 0);
+                            field.onChange(tagsArray);
+                          }}
+                        />
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {field.value.map((tag, index) => (
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="flex items-center gap-1"
+                              >
+                                {tag}
+                                <button
+                                  type="button"
+                                  onClick={() => removeTag(tag, field)}
+                                  className="ml-1 hover:bg-muted rounded-full"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormDescription>
                       Add relevant tags to categorize your snippet.

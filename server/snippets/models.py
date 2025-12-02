@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
@@ -8,7 +9,8 @@ User = get_user_model()
 
 class Snippet(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(_("Title"))
+    title = models.CharField(_("Title"), max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="snippets")
     description = models.TextField(_("Description"), blank=True)
@@ -23,15 +25,34 @@ class Snippet(models.Model):
     class Meta:
         ordering = ["-created_at"]
         verbose_name_plural = "Snippets"
+        indexes = [
+            models.Index(fields=["user"]),
+            models.Index(fields=["is_public"]),
+            models.Index(fields=["created_at"]),
+        ]
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.title) or "snippet"
+            slug = base
+            counter = 1
+
+            while Snippet.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
+        super().save(*args, **kwargs)
 
 
 class Language(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("Name"), unique=True)
-    extension = models.CharField(_("Extension"), max_length=10, default=".txt")
+    extension = models.CharField(_("Extension"), max_length=10, default="txt")
 
     class Meta:
         verbose_name_plural = "Languages"

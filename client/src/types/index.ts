@@ -1,3 +1,9 @@
+export interface PaginatedResponse<T> {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: T[];
+}
 export interface User {
     id: string;
     email: string;
@@ -15,6 +21,7 @@ export interface Lanugage {
 
 export interface Snippet {
     id: string;
+    slug: string;
     title: string;
     description: string;
     content: string;

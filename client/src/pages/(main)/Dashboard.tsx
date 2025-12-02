@@ -5,18 +5,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 import CreateSnippetDialog from "@/components/snippets/CreateSnippetDialog";
 import { useGetUserSnippets } from "@/hooks/snippets/useGetUserSnippets";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { useEffect, useRef } from "react";
 
 export default function DashboardPage() {
-  const { userSnippets, isLoading, isError } = useGetUserSnippets();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useGetUserSnippets();
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+    if (!hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        fetchNextPage();
+      }
+    });
+
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isError) {
     return (
@@ -27,6 +41,8 @@ export default function DashboardPage() {
       </main>
     );
   }
+
+  const userSnippets = data?.pages.flatMap((page) => page.results) ?? [];
 
   return (
     <main className="flex-1">
@@ -63,31 +79,22 @@ export default function DashboardPage() {
               You haven't created any snippets yet.
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userSnippets.map((snippet) => (
-                <SnippetCard key={snippet.id} snippet={snippet} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userSnippets.map((snippet) => (
+                  <SnippetCard key={snippet.id} snippet={snippet} />
+                ))}
+              </div>
+              {/* Infinite-scroll trigger */}
+              <div ref={loadMoreRef} className="h-10" />
+              {isFetchingNextPage && (
+                <p className="text-center text-muted-foreground mt-4">
+                  Loading more…
+                </p>
+              )}
+            </>
           )}
         </ScrollArea>
-        <div className="p-5">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
       </section>
     </main>
   );

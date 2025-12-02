@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 
 
 
-export const useGetSnippetById = (snippetId: string) => {
+export const useGetSnippetBySlug = (slug: string) => {
     const { data: snippet, ...query } = useQuery<Snippet>({
-        queryKey: ["snippet", snippetId],
+        queryKey: ["snippet", slug],
         queryFn: async () => {
-            const response = await api.get<Snippet>(`/snippets/${snippetId}/`);
+            const response = await api.get<Snippet>(`/snippets/${slug}/`);
             return response.data;
         }
     });

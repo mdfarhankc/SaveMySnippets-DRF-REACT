@@ -16,7 +16,7 @@ export const useCreateSnippets = (options?: {
     const queryClient = useQueryClient();
     return useMutation<Snippet, AxiosError<FailResponse>, CreateEditSnippetValues>({
         mutationFn: async (values: CreateEditSnippetValues) => {
-            const response = await api.post('/snippets/create/', values);
+            const response = await api.post('/snippets/', values);
             return response.data;
         },
         onSuccess: () => {

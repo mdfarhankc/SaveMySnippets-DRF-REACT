@@ -2,14 +2,14 @@ import CodeHighlighter from "@/components/snippets/CodeHighlighter";
 import SnippetDetailSkeleton from "@/components/snippets/SnippetDetailSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useGetSnippetById } from "@/hooks/snippets/useGetSnippetById";
+import { useGetSnippetBySlug } from "@/hooks/snippets/useGetSnippetBySlug";
 import { ArrowLeft, Eye, Lock } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
 
 export default function SnippetDetailPage() {
   const navigate = useNavigate();
-  const { snippetId } = useParams<{ snippetId: string }>();
-  const { snippet, isLoading, isError } = useGetSnippetById(snippetId!);
+  const { slug } = useParams<{ slug: string }>();
+  const { snippet, isLoading, isError } = useGetSnippetBySlug(slug!);
 
   if (isError) {
     return (
@@ -32,7 +32,7 @@ export default function SnippetDetailPage() {
   }
   return (
     <main className="flex-1">
-      <section className="container max-w-4xl mx-auto py-8 space-y-6">
+      <section className="container max-w-7xl mx-auto py-8 space-y-6 px-3">
         <div className="flex justify-between items-center">
           <div className="space-y-3">
             <h1 className="text-3xl font-bold">{snippet.title}</h1>

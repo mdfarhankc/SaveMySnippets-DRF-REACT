@@ -1,19 +1,32 @@
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework import permissions, status, generics
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 
-from .serializers import (
+from .serializers.auth_serializers import (
     RegisterUserSerializer, MyTokenObtainPairSerializer, LogoutSerializer, UserSerializer
+)
+from .serializers.password_reset_serializers import (
+    PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 )
 
 
 User = get_user_model()
 
 
+class LoginThrottle(AnonRateThrottle):
+    scope = "login"
+
+
+class PasswordResetThrottle(AnonRateThrottle):
+    scope = "password_reset"
+
+
 class LoginView(TokenObtainPairView):
     """Custom token view that returns user data along with tokens"""
+    throttle_classes = [LoginThrottle]
     serializer_class = MyTokenObtainPairSerializer
 
 
@@ -22,24 +35,6 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterUserSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            errors = []
-            for field, messages in serializer.errors.items():
-                if isinstance(messages, list):
-                    errors.extend(messages)
-                else:
-                    errors.append({field: messages})
-            return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
-        user = serializer.save()
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'user': UserSerializer(user).data
-        }, status=status.HTTP_201_CREATED)
 
 
 class LogoutView(generics.GenericAPIView):
@@ -61,3 +56,31 @@ class AuthUserView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class PasswordResetRequestView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [PasswordResetThrottle]
+    serializer_class = PasswordResetRequestSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        token = serializer.create_reset_token(email)
+        send_password_reset_email(email, token)
+
+        return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = PasswordResetConfirmSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        return Response({"detail": "Password reset successful."}, status=status.HTTP_200_OK)

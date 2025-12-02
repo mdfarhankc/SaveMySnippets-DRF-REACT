@@ -46,7 +46,7 @@ export default function HomePage() {
     <>
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 px-6 md:py-36 bg-gradient-to-b from-background to-muted/50">
+        <section className="py-20 px-6 md:py-36 bg-linear-to-b from-background to-muted/50">
           <div className="container max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 text-center lg:text-left">
             {/* Left Content */}
             <div className="flex-1">
@@ -55,29 +55,29 @@ export default function HomePage() {
                   <Code className="h-12 w-12 text-primary" />
                 </div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 text-shadow-primary text-shadow-md">
+              <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4 text-shadow-primary text-shadow-md">
                 Organize Your Code Snippets
               </h1>
-              <p className="text-xl text-muted-foreground max-w-3xl mb-8 mx-auto lg:mx-0">
+              <p className="text-md sm:text-lg  md:text-xl text-muted-foreground max-w-3xl mb-8 mx-auto lg:mx-0">
                 Store, manage, and share your code snippets in one place.
                 Perfect for developers who want to keep their code organized.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 {authUser ? (
                   <>
-                    <Button size="lg" asChild>
+                    <Button asChild>
                       <Link to="/dashboard">Go to Dashboard</Link>
                     </Button>
-                    <Button variant="outline" size="lg" asChild>
+                    <Button variant="outline" asChild>
                       <Link to="/explore">Explore Snippets</Link>
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button size="lg" asChild>
+                    <Button asChild>
                       <Link to="/sign-up">Get Started</Link>
                     </Button>
-                    <Button variant="outline" size="lg" asChild>
+                    <Button variant="outline" asChild>
                       <Link to="/explore">Explore Snippets</Link>
                     </Button>
                   </>
@@ -101,7 +101,7 @@ export default function HomePage() {
         {/* Features section */}
         <section className="py-16 px-6 bg-background">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">
               Everything You Need to Organize Your Code
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -127,16 +127,16 @@ export default function HomePage() {
         {/* CTA section */}
         <section className="py-16 px-6 bg-muted">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
               Start Organizing Your Code Today
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-md sm:text-xl text-muted-foreground mb-8">
               Join developers who use SaveMySnippet to keep their code snippets
               organized and accessible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
-                <Link to="/register">Sign Up for Free</Link>
+              <Button asChild>
+                <Link to="/sign-up">Sign Up for Free</Link>
               </Button>
             </div>
           </div>

@@ -3,15 +3,43 @@ import Prism from "prismjs";
 // For Theme
 import "prismjs/themes/prism-tomorrow.css";
 // For Code Highlight
+import "prismjs/components/prism-bash.min.js";
+import "prismjs/components/prism-json.min.js";
+import "prismjs/components/prism-markup-templating.min.js";
+import "prismjs/components/prism-markup.min.js";
+import "prismjs/components/prism-markdown.min.js";
+import "prismjs/components/prism-css.min.js";
+import "prismjs/components/prism-scss.min.js";
+import "prismjs/components/prism-sql.min.js";
+import "prismjs/components/prism-go.min.js";
 import "prismjs/components/prism-python.min.js";
 import "prismjs/components/prism-javascript.min.js";
 import "prismjs/components/prism-typescript.min.js";
 import "prismjs/components/prism-markup.min.js";
+import "prismjs/components/prism-php.min.js";
+import "prismjs/components/prism-yaml.min.js";
 import type { ClassValue } from "class-variance-authority/types";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Copy } from "lucide-react";
+
+const languageMap: Record<string, string> = {
+  py: "python",
+  php: "php",
+  js: "javascript",
+  ts: "typescript",
+  html: "markup",
+  markup: "markup",
+  yaml: "yaml",
+  yml: "yaml",
+  json: "json",
+  css: "css",
+  scss: "scss",
+  sql: "sql",
+  go: "go",
+  sh: "bash",
+};
 
 export default function CodeHighlighter({
   language,
@@ -36,6 +64,8 @@ export default function CodeHighlighter({
     }
   };
 
+  const prismLang = languageMap[language] ?? "plaintext";
+
   return (
     <div className="relative">
       {showCopyButton && (
@@ -55,16 +85,16 @@ export default function CodeHighlighter({
 
       <pre
         className={cn(
-          `language-${language} p-4 rounded-lg overflow-auto`,
+          `language-${prismLang} p-4 rounded-lg overflow-auto`,
           className
         )}
       >
         <code
-          className={`language-${language} block`}
+          className={`language-${prismLang} block`}
           dangerouslySetInnerHTML={{
             __html: Prism.highlight(
               content,
-              Prism.languages[language],
+              Prism.languages[prismLang],
               language
             ),
           }}

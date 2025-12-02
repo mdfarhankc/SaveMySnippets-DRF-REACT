@@ -1,69 +1,65 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters, status
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
+from drf_spectacular.utils import extend_schema
 
 from .models import Snippet, Language
 from .serializers import (
-    CreateSnippetSerializer, SnippetSerializer, LanguageSerializer
+    CreateOrUpdateSnippetSerializer, SnippetSerializer, LanguageSerializer
 )
 from .permissions import IsOwnerOrReadonly
 
 
-class CreateSnippetView(generics.CreateAPIView):
-    """Create a new snippet"""
-    queryset = Snippet.objects.all()
-    serializer_class = CreateSnippetSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# ------------------- Snippets ---------------------------
+@extend_schema(tags=["Snippets"], description="List public snippets or create a new snippet")
+class SnippetListCreateView(generics.ListCreateAPIView):
+    """List all public snippets or create a snippet"""
+    queryset = Snippet.objects.filter(is_public=True)
+    serializer_class = CreateOrUpdateSnippetSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title", "content"]
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return SnippetSerializer
+        return CreateOrUpdateSnippetSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        """Override to return full snippet data after creation."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        snippet = serializer.save(user=request.user)
+        full_data = SnippetSerializer(snippet).data
+        return Response(full_data, status=status.HTTP_201_CREATED)
 
-class SnippetListView(generics.ListAPIView):
-    """List all public snippets"""
-    queryset = Snippet.objects.filter(is_public=True)
-    serializer_class = SnippetSerializer
-    permission_classes = [permissions.AllowAny]
 
-
-class SnippetDetailView(generics.RetrieveAPIView):
+@extend_schema(tags=["Snippets"], description="Get snippet details or update snippet or delete snippet")
+class SnippetDetailUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """ Get snippet details or update snippet or delete snippet. """
     queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadonly]
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return CreateOrUpdateSnippetSerializer
+        return SnippetSerializer
 
     def get_object(self):
         obj = super().get_object()
-        if obj.is_public or obj.user == self.request.user:
-            return obj
-        else:
-            raise PermissionDenied(
-                "You don't have permission to view this snippet.")
-
-
-class UpdateSnippetView(generics.UpdateAPIView):
-    """Update an existing snippet"""
-    queryset = Snippet.objects.all()
-    serializer_class = CreateSnippetSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadonly]
-
-    def get_object(self):
-        obj = super().get_object()
-        if obj.user != self.request.user:
-            raise PermissionDenied("You can only edit your own snippets.")
+        if not obj.is_public and obj.user != self.request.user:
+            raise PermissionDenied("You cannot view this private snippet.")
         return obj
 
 
-class DeleteSnippetView(generics.DestroyAPIView):
-    queryset = Snippet.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadonly]
-
-    def get_object(self):
-        obj = super().get_object()
-        if obj.user != self.request.user:
-            raise PermissionDenied("You can only delete your own snippets.")
-        return obj
-
-
+@extend_schema(tags=["Snippets"], description="Get current users snippets")
 class UserSnippetsView(generics.ListAPIView):
-    queryset = Snippet.objects.all()
+    """ Get current users snippets. """
     serializer_class = SnippetSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -71,7 +67,11 @@ class UserSnippetsView(generics.ListAPIView):
         return Snippet.objects.filter(user=self.request.user)
 
 
+# ------------- Languages -------------------
+@extend_schema(tags=["Languages"], description="List all languages")
 class ListLanguagesView(generics.ListAPIView):
+    """ List all languages. """
     queryset = Language.objects.all()
     serializer_class = LanguageSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
