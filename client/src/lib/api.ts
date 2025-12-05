@@ -40,6 +40,7 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${access}`;
                 return api(originalRequest);
             } catch (refreshError) {
+                console.error("Error in API Refresh: ", refreshError)
                 // Refresh failed, force logout
                 useAuthStore.getState().logout();
                 return Promise.reject(refreshError);

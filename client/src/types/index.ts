@@ -28,6 +28,7 @@ export interface Snippet {
     is_public: boolean;
     language: Lanugage;
     tags: Array<string>;
+    created_by: string;
     created_at: string;
     updated_at: string;
 }

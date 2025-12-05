@@ -9,6 +9,7 @@ import DashboardPage from "@/pages/(main)/Dashboard";
 import SnippetDetailPage from "@/pages/(main)/SnippetDetail";
 import ExplorePage from "@/pages/(root)/Explore";
 import ContactPage from "@/pages/(root)/Contact";
+import EditSnippetPage from "@/pages/(main)/EditSnippetPage";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
           {
             path: "/snippet/:slug",
             element: <SnippetDetailPage />,
+          },
+          {
+            path: "/snippet/:slug/edit",
+            element: <EditSnippetPage />,
           },
         ],
       },

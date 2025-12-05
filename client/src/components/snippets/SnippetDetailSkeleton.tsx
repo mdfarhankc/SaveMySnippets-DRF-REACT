@@ -3,7 +3,7 @@ import { Skeleton } from "../ui/skeleton";
 export default function SnippetDetailSkeleton() {
   return (
     <main className="flex-1">
-      <section className="container max-w-4xl mx-auto py-8 space-y-6">
+      <section className="container max-w-7xl mx-auto py-8 space-y-6">
         <div className="flex justify-between items-center">
           <div className="space-y-3">
             <Skeleton className="h-10 w-md" />

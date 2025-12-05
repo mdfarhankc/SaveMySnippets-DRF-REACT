@@ -23,7 +23,12 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(_("Email address"), unique=True)
-    username = models.CharField(_("Username"), max_length=150, null=True, blank=True)
+    username = models.CharField(
+        _("Username"), max_length=150, null=True, blank=True)
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
 
     objects = UserManager()
 

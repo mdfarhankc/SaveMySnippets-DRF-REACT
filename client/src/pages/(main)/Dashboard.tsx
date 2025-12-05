@@ -6,6 +6,7 @@ import CreateSnippetDialog from "@/components/snippets/CreateSnippetDialog";
 import { useGetUserSnippets } from "@/hooks/snippets/useGetUserSnippets";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useRef } from "react";
+import SnippetsListEmpty from "@/components/snippets/SnippetsListEmpty";
 
 export default function DashboardPage() {
   const {
@@ -43,6 +44,7 @@ export default function DashboardPage() {
   }
 
   const userSnippets = data?.pages.flatMap((page) => page.results) ?? [];
+  console.log("Snippets: ", userSnippets);
 
   return (
     <main className="flex-1">
@@ -56,10 +58,10 @@ export default function DashboardPage() {
         </div>
       </section>
       <Separator />
-      <section className="container max-w-7xl mx-auto py-5">
+      <section className="container max-w-7xl mx-auto py-5 px-3">
         <ScrollArea>
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -75,9 +77,7 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : userSnippets.length === 0 ? (
-            <p className="text-muted-foreground">
-              You haven't created any snippets yet.
-            </p>
+            <SnippetsListEmpty />
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateSnippets } from "@/hooks/snippets/useCreateSnippets";
 import {
   createEditSnippetSchema,
@@ -33,6 +32,7 @@ import LoadingButton from "../common/LoadingButton";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import { X } from "lucide-react";
+import AutoResizeTextarea from "../ui/AutoResizeTextarea";
 
 export default function CreateSnippetDialog() {
   const [open, setOpen] = useState(false);
@@ -207,7 +207,7 @@ export default function CreateSnippetDialog() {
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <AutoResizeTextarea {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

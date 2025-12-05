@@ -75,9 +75,17 @@ export default function SnippetCard({ snippet }: { snippet: Snippet }) {
         <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
       </CardContent>
       <CardFooter className="mt-auto text-sm text-muted-foreground flex items-center justify-between border-t">
-        <div>Last updated: {format(new Date(snippet.updated_at), "PPP")}</div>
+        <div className="flex flex-col">
+          <span>
+            Last updated: {format(new Date(snippet.updated_at), "PPP")}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            Created by: <span className="font-bold">{snippet.created_by}</span>
+          </span>
+        </div>
+
         <Badge variant="secondary" className="uppercase">
-          {snippet?.language.name}
+          {snippet.language.name}
         </Badge>
       </CardFooter>
     </Card>
