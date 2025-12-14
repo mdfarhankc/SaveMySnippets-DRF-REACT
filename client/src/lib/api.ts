@@ -27,17 +27,20 @@ api.interceptors.response.use(
 
             try {
                 const { refresh, login } = useAuthStore.getState();
-                const res = await axios.post(`${api.defaults.baseURL}/auth/token/refresh/`, {
-                    refresh,
-                });
+                if (refresh) {
+                    const res = await axios.post(`${api.defaults.baseURL}/auth/token/refresh/`, {
+                        refresh,
+                    });
 
-                const { access } = res.data;
-                const user = useAuthStore.getState().authUser;
+                    const { access } = res.data;
+                    const user = useAuthStore.getState().authUser;
 
-                login({ access, refresh: refresh!, authUser: user! });
+                    login({ access, refresh: refresh!, authUser: user! });
 
-                // Update Authorization header and retry request
-                originalRequest.headers.Authorization = `Bearer ${access}`;
+                    // Update Authorization header and retry request
+                    originalRequest.headers.Authorization = `Bearer ${access}`;
+                }
+
                 return api(originalRequest);
             } catch (refreshError) {
                 console.error("Error in API Refresh: ", refreshError)
